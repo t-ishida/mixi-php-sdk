@@ -1,30 +1,31 @@
 <?php
 require_once 'mixi_graph_api.php';
 
-class Mixi extends MixiGraphAPI{
-
-    function __construct($config)
+class Mixi extends MixiGraphAPI {
+    private $_Store = array();
+    function __construct($config, $store )
     {
-        parent::__construct($config);
+      parent::__construct($config);
+      $this->_Store = $store;
     }
 
-    protected function setAppData($key, $value)
+    public function setAppData($key, $value)
     {
         if(!$key) return;
         $name = $this->createKeyname($key);
-        $_SESSION[$name] = $value;
+        $this->_Store[$name] = $value;
     }
 
-    protected function getAppData($key, $default = false)
+    public function getAppData($key, $default = false)
     {
-        $name = $this->createKeyname($key);
-        return ($_SESSION && isset($_SESSION[$name])) ? $_SESSION[$name] : $default;
+      $name = $this->createKeyname($key);
+        return ($this->_Store  && isset($this->_Store[$name])) ? $this->_Store[$name] : $default;
     }
 
     protected function clearAppData($key)
     {
         $name = $this->createKeyname($key);
-        unset($_SESSION[$name]);
+        unset($this->_Store[$name]);
     }
 
     protected static $supportedKeys =
@@ -41,7 +42,15 @@ class Mixi extends MixiGraphAPI{
                               $this->consumer_key,
                               $key));
     }
+  
 
+    public function clearStroe () {
+      $this->_Store = array();
+    }
+    public function clearStore () {
+      $this->_Store = array();
+    }
+    public function getStore() {
+      return $this->_Store;
+    }
 }
-
-?>
